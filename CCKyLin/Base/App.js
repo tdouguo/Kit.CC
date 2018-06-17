@@ -1,18 +1,12 @@
+var KLComponentBase = require("KLComponentBase");
 
 var KyLinApp = cc.Class({
     extends: cc.Component,
     properties: {
-        ui: {
-            default: null,
-            type: require("UIComponent"),
-        },
-        sound: {
-            default: null,
-            type: require("SoundComponent")
-        },
-        pool: {
-            default: null,
-            type: require("PoolComponent")
+        components: {
+            default: [],
+            type: KLComponentBase,
+            tooltip: "KyLin 组件"
         }
     },
 
@@ -34,21 +28,37 @@ var KyLinApp = cc.Class({
      */
     initKL() {
         KLLog.info("[KyLin] init.");
-        KLApp.ui.init();
-        KLApp.sound.init();
-        KLApp.pool.init();
-        KLApp.app.emit(EVENT_KL_INIT, 'KyLin.Init.Complete');
+        for (let i = 0; i < this.components.length; i++) {
+            if (this.components[i] == undefined || this.components[i] == null) {
+                KLLog.warn("[KyLin] Conponent init failed,index:", i);
+            }
+            try {
+                this.components[i].init();
+            } catch (error) {
+                KLLog.error("[KyLin] Conponent init failed,error message :", this.components[i], error);
+            }
+        }
+        KLLog.info("[KyLin] init Complete.");
+        try {
+            KLApp.app.emit(EVENT_KL_INIT, 'KyLin.Init.Complete');
+        } catch (error) {
+            KLLog.error("[KyLin] init Complete. emit event error,", error);
+        }
     },
     /**
      * 关闭
      */
     shatdown() {
-        KLApp.ui.shatdown();
-        KLApp.sound.shatdown();
-        KLApp.pool.shatdown();
-        KLApp.ui = null;
-        KLApp.sound = null;
-        KLApp.pool = null;
+        for (let i = 0; i < this.components.length; i++) {
+            if (this.components[i] == undefined || this.components[i] == null) {
+                KLLog.warn("[KyLin] Conponent shatdown failed,index:", i);
+            }
+            try {
+                this.components[i].shatdown();
+            } catch (error) {
+                KLLog.error("[KyLin] Conponent shatdown failed,error message :", this.components[i], error);
+            }
+        }
     },
     //#endregion
 

@@ -5,6 +5,19 @@ var UIComponent = cc.Class({
 
     },
     onLoad() {
-        KLApp.ui = this;
     },
+
+    //#region Framework
+    init() {
+        KLApp.ui = this; 
+        this._super();
+    },
+    /**
+     * 关闭
+     */
+    shatdown() {
+        this._super();
+        KLApp.ui = null; 
+    },
+    //#endregion
 });
